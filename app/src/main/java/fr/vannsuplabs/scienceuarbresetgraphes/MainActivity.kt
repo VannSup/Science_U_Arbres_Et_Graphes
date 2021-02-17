@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import fr.vannsuplabs.scienceuarbresetgraphes.data.Tree
+import fr.vannsuplabs.scienceuarbresetgraphes.data.TreeEquilibre
 
 class MainActivity : AppCompatActivity() {
     private val mainTextView : TextView get() = findViewById(R.id.main_text)
@@ -15,9 +16,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun start(){
-        var resultString = ""
 
-        val rootA = Tree("A", null)
+        var result = ""
+
+        result += td1()
+
+        result += td2()
+
+        result += td3()
+
+        mainTextView.text = result;
+    }
+
+    private fun td1() : String{
+        var result = "Tp1 :\n"
+
+        val rootA = Tree("A")
         val nodeB = Tree("B", rootA)
         val nodeC = Tree("C", rootA)
         val nodeD = Tree("D", rootA)
@@ -34,13 +48,13 @@ class MainActivity : AppCompatActivity() {
         val nodeO = Tree("O", nodeI)
         val nodeP = Tree("P", nodeM)
         val tree = mutableListOf(nodeB, nodeC, nodeD, nodeE, nodeF, nodeG, nodeH, nodeI, nodeJ, nodeK, nodeL, nodeM, nodeN, nodeO, nodeP)
-        rootA.parseFromList(tree, null)
+        rootA.parseFromList(tree)
 
-        resultString += "Parcours en largeur arbre 1: ${rootA.parcoursLargeur()}\n"
-        resultString += "Profondeur préfixe arbre 1: ${rootA.profondeurPrefixe()}\n"
-        resultString += "Profondeur sufixe arbre 1: ${rootA.profondeurSuffixe()}\n\n"
+        result += "Arbre 1 :\n"
+        result += "${rootA}\n"
+        result += rootA.showResultOfParcour()
 
-        val root20  = Tree("20", null)
+        val root20  = Tree("20")
         val node5   = Tree("5", root20)
         val node25  = Tree("25", root20)
         val node3   = Tree("3", node5)
@@ -51,22 +65,56 @@ class MainActivity : AppCompatActivity() {
         val node13  = Tree("13", node12)
         val node6   = Tree("6", node13)
         val tree2 = mutableListOf(node5, node25, node3, node12, node8, node13, node6, node21, node28)
-        root20.parseFromList(tree2, null)
+        root20.parseFromList(tree2)
 
-        resultString +="Parcours en largeur arbre 2: ${root20.parcoursLargeur()}\n"
-        resultString +="Profondeur préfixe arbre 2: ${root20.profondeurPrefixe()}\n"
-        resultString +="Profondeur sufixe arbre 2: ${root20.profondeurSuffixe()}\n"
-        resultString += "Profondeur infixe arbre 2: ${root20.profondeurInfixe()}\n\n"
+        result += "Arbre 2 :\n" +
+                "${root20}\n" +
+                root20.showResultOfParcour()
+
+        return result
+    }
+
+    private fun td2() : String {
+        var result = "Tp2 :\n"
 
         val listOfValues = mutableListOf(20, 2, 35, 50, 12, 885, 9, 7)
-        val tasRoot = Tree("20",null)
-        tasRoot.AddChildrenFromListOfValue(listOfValues,0)
+        val tasRoot = Tree("20")
+        tasRoot.addChildrenFromListOfValue(listOfValues,0)
 
-        resultString +="Parcours en largeur arbre 3: ${tasRoot.parcoursLargeur()}\n"
-        resultString +="Profondeur préfixe arbre 3: ${tasRoot.profondeurPrefixe()}\n"
-        resultString +="Profondeur sufixe arbre 3: ${tasRoot.profondeurSuffixe()}\n"
-        resultString += "Profondeur infixe arbre 3: ${tasRoot.profondeurInfixe()}\n\n"
+        result += "Arbre 3 :\n " +
+                "${tasRoot}\n" +
+                tasRoot.showResultOfParcour()
 
-        mainTextView.text = resultString;
+        return result
     }
+
+    private fun td3() : String {
+        var result = "Tp3 :\n"
+
+        val root = TreeEquilibre(20)
+        val node5= TreeEquilibre(5,root)
+        val node25= TreeEquilibre(25,root)
+        val node3= TreeEquilibre(3,node5)
+        val node12= TreeEquilibre(12,node5)
+        val node21= TreeEquilibre(21,node25)
+        val node28= TreeEquilibre(28,node25)
+        val node8 = TreeEquilibre(8,node12)
+        val node13 = TreeEquilibre(13,node12)
+        val node6 = TreeEquilibre(6,node8)
+        val tree = mutableListOf(node5, node25, node3, node12, node21, node28, node8, node13, node6)
+        root.parseFromList(tree)
+
+        result += "Hauteur : ${root.hauteurMax()}\n"
+        result += "Facteur d'équilibrage : ${root.facteurEquilibrage()}"
+
+        return result + "\n\n"
+    }
+
+    /*
+    private fun td() : String {
+        var result = ""
+
+        return result + "\n\n"
+    }
+     */
 }

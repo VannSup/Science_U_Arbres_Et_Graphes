@@ -2,7 +2,7 @@ package fr.vannsuplabs.scienceuarbresetgraphes.data
 
 import java.util.*
 
-class Tree(private val id: String, private var parent: Tree?) {
+class Tree(private val id: String, private var parent: Tree? = null) {
     var children: MutableList<Tree> = mutableListOf()
 
     fun parcoursLargeur(): String {
@@ -36,6 +36,9 @@ class Tree(private val id: String, private var parent: Tree?) {
     fun profondeurInfixe(): String {
         var result = ""
 
+        if(this.children.size > 2)
+            return "Impossible de continué l'arbre n'est pas binaire"
+
         if (this.children.size >= 1)
             result += this.children[0].profondeurInfixe()
 
@@ -47,7 +50,7 @@ class Tree(private val id: String, private var parent: Tree?) {
         return result;
     }
 
-    fun parseFromList(listOfNode: MutableList<Tree>, root: Tree?): Tree {
+    fun parseFromList(listOfNode: MutableList<Tree>, root: Tree? = null): Tree {
         this.parent = root
         val childOfThisTree: MutableList<Tree> = mutableListOf()
 
@@ -61,19 +64,43 @@ class Tree(private val id: String, private var parent: Tree?) {
         return this
     }
 
-    fun AddChildrenFromListOfValue(values: MutableList<Int>, selfPosition: Int) {
+    fun addChildrenFromListOfValue(values: MutableList<Int>, selfPosition: Int) {
         val length = values.size
         val childOfThisTree: MutableList<Tree> = mutableListOf()
         if (2 * selfPosition + 1 < length) {
             val leftChild = Tree(values[2 * selfPosition + 1].toString(), this.parent)
-            leftChild.AddChildrenFromListOfValue(values, 2 * selfPosition + 1)
+            leftChild.addChildrenFromListOfValue(values, 2 * selfPosition + 1)
             childOfThisTree.add(leftChild)
         }
         if (2 * selfPosition + 2 < length) {
             val rightChild = Tree(values[2 * selfPosition + 2].toString(), this.parent)
-            rightChild.AddChildrenFromListOfValue(values, 2 * selfPosition + 2)
+            rightChild.addChildrenFromListOfValue(values, 2 * selfPosition + 2)
             childOfThisTree.add(rightChild)
         }
         this.children = childOfThisTree
+    }
+
+    fun showResultOfParcour():String{
+        return "Parcours en largeur arbre : ${this.parcoursLargeur()}\n" +
+                "Profondeur préfixe arbre : ${this.profondeurPrefixe()}\n" +
+                "Profondeur sufixe arbre : ${this.profondeurSuffixe()}\n" +
+                "Profondeur infixe arbre : ${this.profondeurInfixe()}\n\n"
+    }
+
+    fun showArbre(profondeur :Int){
+        var result =""
+        for (i in 1..profondeur)
+            result += "${i}----"
+        result += this.id + "\n"
+
+        this.children.forEach {result += it.showArbre(profondeur+1) }
+    }
+
+    override fun toString(): String {
+        var result = this.id
+        if (!children.isEmpty()) {
+            result += "   {" + children.map { it.toString() } + "}   "
+        }
+        return result
     }
 }
