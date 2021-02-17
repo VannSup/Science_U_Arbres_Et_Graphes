@@ -6,19 +6,18 @@ class Tree(private val id: String, private var parent: Tree? = null) {
     var children: MutableList<Tree> = mutableListOf()
 
     fun parcoursLargeur(): String {
-        var resultString = "";
-
+        var resultString = ""
         val currentNodes: Queue<Tree> = LinkedList()
         currentNodes.add(this);
         val result: MutableList<Tree> = mutableListOf()
 
         while (currentNodes.size != 0) {
-            val currentNode: Tree = currentNodes.remove();
-            resultString = resultString + " " + currentNode.id;
+            val currentNode: Tree = currentNodes.remove()
+            resultString += " ${currentNode.id}"
             result.add(currentNode)
             currentNode.children.forEach { child -> currentNodes.add(child)}
         }
-        return resultString;
+        return resultString
     }
 
     fun profondeurPrefixe(): String {
@@ -87,19 +86,10 @@ class Tree(private val id: String, private var parent: Tree? = null) {
                 "Profondeur infixe arbre : ${this.profondeurInfixe()}\n\n"
     }
 
-    fun showArbre(profondeur :Int){
-        var result =""
-        for (i in 1..profondeur)
-            result += "${i}----"
-        result += this.id + "\n"
-
-        this.children.forEach {result += it.showArbre(profondeur+1) }
-    }
-
     override fun toString(): String {
         var result = this.id
-        if (!children.isEmpty()) {
-            result += "   {" + children.map { it.toString() } + "}   "
+        if (children.isNotEmpty()) {
+            result += " {" + children.map { "$it" } + "} "
         }
         return result
     }

@@ -93,4 +93,20 @@ class TreeEquilibre(private val id: Int, private var parent : TreeEquilibre? = n
         }
     }
 
+    override fun toString(): String {
+        var result = "${this.id}"
+
+        result += if(childrenLeft != null)
+            " {" + childrenLeft?.toString() + "} "
+        else
+            " {Ø} "
+
+        result += if(childrenRight != null)
+            " {" + childrenRight?.toString() + "} "
+        else
+            " {Ø} "
+
+        return result
+    }
+
 }

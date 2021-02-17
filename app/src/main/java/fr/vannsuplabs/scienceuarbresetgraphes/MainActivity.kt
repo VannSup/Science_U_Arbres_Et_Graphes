@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import fr.vannsuplabs.scienceuarbresetgraphes.data.Tree
+import fr.vannsuplabs.scienceuarbresetgraphes.data.TreeBinaireSearch
 import fr.vannsuplabs.scienceuarbresetgraphes.data.TreeEquilibre
 
 class MainActivity : AppCompatActivity() {
@@ -25,7 +26,9 @@ class MainActivity : AppCompatActivity() {
 
         result += td3()
 
-        mainTextView.text = result;
+        result += td4()
+
+        mainTextView.text = result
     }
 
     private fun td1() : String{
@@ -78,18 +81,47 @@ class MainActivity : AppCompatActivity() {
         var result = "Tp2 :\n"
 
         val listOfValues = mutableListOf(20, 2, 35, 50, 12, 885, 9, 7)
-        val tasRoot = Tree("20")
-        tasRoot.addChildrenFromListOfValue(listOfValues,0)
+        val root = Tree("20")
+        root.addChildrenFromListOfValue(listOfValues,0)
 
-        result += "Arbre 3 :\n " +
-                "${tasRoot}\n" +
-                tasRoot.showResultOfParcour()
+        result += "Arbre :\n " +
+                "${root}\n" +
+                root.showResultOfParcour()
 
         return result
     }
 
     private fun td3() : String {
         var result = "Tp3 :\n"
+
+        val root = TreeBinaireSearch(20)
+        val node5= TreeBinaireSearch(5,root)
+        val node25= TreeBinaireSearch(25,root)
+        val node3= TreeBinaireSearch(3,node5)
+        val node12= TreeBinaireSearch(12,node5)
+        val node21= TreeBinaireSearch(21,node25)
+        val node28= TreeBinaireSearch(28,node25)
+        val node8 = TreeBinaireSearch(8,node12)
+        val node13 = TreeBinaireSearch(13,node12)
+        val node6 = TreeBinaireSearch(6,node8)
+        val tree = mutableListOf(node5, node25, node3, node12, node21, node28, node8, node13, node6)
+        root.parseFromList(tree)
+
+        root.insert(50)
+        root.insert(19)
+
+        result += "Arbre :\n " +
+                "${root}\n" +
+                "Parcours infixe : ${root.profondeurInfixe()}\n"+
+                "La fonction recherche retourne null si pas present dans l'arbre\n"+
+                "Recherche de 8: ${root.find(8)}\n" +
+                "Recherche de 9: ${root.find(9)}"
+
+        return result + "\n\n"
+    }
+
+    private fun td4() : String {
+        var result = "Tp4 :\n"
 
         val root = TreeEquilibre(20)
         val node5= TreeEquilibre(5,root)
@@ -104,17 +136,12 @@ class MainActivity : AppCompatActivity() {
         val tree = mutableListOf(node5, node25, node3, node12, node21, node28, node8, node13, node6)
         root.parseFromList(tree)
 
-        result += "Hauteur : ${root.hauteurMax()}\n"
-        result += "Facteur d'équilibrage : ${root.facteurEquilibrage()}"
+        result += "Arbre :\n " +
+                "${root}\n" +
+                "Hauteur : ${root.hauteurMax()}\n" +
+                "Facteur d'équilibrage : ${root.facteurEquilibrage()}"
 
         return result + "\n\n"
     }
 
-    /*
-    private fun td() : String {
-        var result = ""
-
-        return result + "\n\n"
-    }
-     */
 }

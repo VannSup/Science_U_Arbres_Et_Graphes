@@ -25,6 +25,23 @@ class TreeBinaireSearch(private val id: Int, private var parent : TreeBinaireSea
         else -> this
     }
 
+    fun insert(value: Int) {
+        if (value > this.id) {
+            if (this.childrenRight == null) {
+                this.childrenRight = TreeBinaireSearch(value, this)
+            } else {
+                this.childrenRight!!.insert(value)
+            }
+        } else if (value < this.id) {
+            if (this.childrenLeft == null) {
+                this.childrenLeft = TreeBinaireSearch(value, this)
+            } else {
+                this.childrenLeft!!.insert(value)
+            }
+        }
+        //Si on tombe sur la valeur bah on fait rien
+    }
+
     fun parseFromList(listOfNode: MutableList<TreeBinaireSearch>, root: TreeBinaireSearch? = null): TreeBinaireSearch {
         this.parent = root
         listOfNode.forEach {
@@ -53,5 +70,21 @@ class TreeBinaireSearch(private val id: Int, private var parent : TreeBinaireSea
             rightChild.addChildrenFromListOfValue(values, 2 * selfPosition + 2)
             childrenRight = rightChild
         }
+    }
+
+    override fun toString(): String {
+        var result = "${this.id}"
+
+        result += if(childrenLeft != null)
+            " {" + childrenLeft?.toString() + "} "
+        else
+            " {Ø} "
+
+        result += if(childrenRight != null)
+            " {" + childrenRight?.toString() + "} "
+        else
+            " {Ø} "
+
+        return result
     }
 }
