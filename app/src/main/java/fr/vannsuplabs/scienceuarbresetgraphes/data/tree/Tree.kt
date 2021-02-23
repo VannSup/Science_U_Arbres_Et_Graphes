@@ -1,4 +1,4 @@
-package fr.vannsuplabs.scienceuarbresetgraphes.data
+package fr.vannsuplabs.scienceuarbresetgraphes.data.tree
 
 import java.util.*
 
@@ -86,11 +86,47 @@ class Tree(private val id: String, private var parent: Tree? = null) {
                 "Profondeur infixe arbre : ${this.profondeurInfixe()}\n\n"
     }
 
-    override fun toString(): String {
+    /*override fun toString(): String {
         var result = this.id
         if (children.isNotEmpty()) {
             result += " {" + children.map { "$it" } + "} "
         }
         return result
+    }*/
+
+    override fun toString(): String {
+
+        val result : StringBuilder = StringBuilder()
+        result.append(this.id)
+        this.children.forEachIndexed { index, tree ->
+            val isLast = index != this.children.size-1
+            val nextPointer = if(isLast) "├──" else "└──"
+            traverseNodes(result,"",nextPointer,tree, isLast)
+        }
+        return result.toString()
     }
+
+    private fun traverseNodes(sb: StringBuilder, padding: String?, pointer: String?, node: Tree?,
+                              hasNextSibling: Boolean) {
+        if (node != null) {
+            sb.append("\n")
+            sb.append(padding)
+            sb.append(pointer)
+            sb.append(node.id)
+            val paddingBuilder = StringBuilder(padding)
+            if (hasNextSibling) {
+                paddingBuilder.append("│     ")
+            } else {
+                paddingBuilder.append("        ")
+            }
+            val paddingForBoth = paddingBuilder.toString()
+
+            node.children.forEachIndexed { index, tree ->
+                val isLast = index != node.children.size-1
+                val nextPointer = if(isLast) "├──" else "└──"
+                traverseNodes(sb,paddingForBoth,nextPointer,tree, isLast)
+            }
+        }
+    }
+
 }

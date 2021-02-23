@@ -3,9 +3,9 @@ package fr.vannsuplabs.scienceuarbresetgraphes
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import fr.vannsuplabs.scienceuarbresetgraphes.data.Tree
-import fr.vannsuplabs.scienceuarbresetgraphes.data.TreeBinaireSearch
-import fr.vannsuplabs.scienceuarbresetgraphes.data.TreeEquilibre
+import fr.vannsuplabs.scienceuarbresetgraphes.data.tree.Tree
+import fr.vannsuplabs.scienceuarbresetgraphes.data.tree.TreeBinaireSearch
+import fr.vannsuplabs.scienceuarbresetgraphes.data.tree.TreeEquilibre
 
 class MainActivity : AppCompatActivity() {
     private val mainTextView : TextView get() = findViewById(R.id.main_text)
@@ -18,9 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun start(){
 
-        var result = ""
-
-        result += td1()
+        var result = td1()
 
         result += td2()
 
@@ -66,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         val node28  = Tree("28", node25)
         val node8   = Tree("8", node12)
         val node13  = Tree("13", node12)
-        val node6   = Tree("6", node13)
+        val node6   = Tree("6", node8)
         val tree2 = mutableListOf(node5, node25, node3, node12, node8, node13, node6, node21, node28)
         root20.parseFromList(tree2)
 
@@ -107,15 +105,19 @@ class MainActivity : AppCompatActivity() {
         val tree = mutableListOf(node5, node25, node3, node12, node21, node28, node8, node13, node6)
         root.parseFromList(tree)
 
-        root.insert(50)
-        root.insert(19)
+
 
         result += "Arbre :\n " +
                 "${root}\n" +
+                " Ajout de 50 et de 19\n"
+
+        root.insert(50)
+        root.insert(19)
+
+        result += "${root}\n" +
                 "Parcours infixe : ${root.profondeurInfixe()}\n"+
-                "La fonction recherche retourne null si pas present dans l'arbre\n"+
-                "Recherche de 8: ${root.find(8)}\n" +
-                "Recherche de 9: ${root.find(9)}"
+                "Recherche de 8: ${root.findToString(8)}\n" +
+                "Recherche de 9: ${root.findToString(9)}"
 
         return result + "\n\n"
     }
@@ -138,10 +140,11 @@ class MainActivity : AppCompatActivity() {
 
         result += "Arbre :\n " +
                 "${root}\n" +
-                "Hauteur : ${root.hauteurMax()}\n" +
-                "Facteur d'équilibrage : ${root.facteurEquilibrage()}"
+                "Hauteur : ${root.hauteur()}\n" +
+                "Facteur d'équilibrage : ${root.facteurEquilibrage()}\n" +
+                "L'arbre es-il équilibré : ${root.isEquilibe()}\n" +
+                "Rotation du noeud gauche" //TODO
 
         return result + "\n\n"
     }
-
 }
