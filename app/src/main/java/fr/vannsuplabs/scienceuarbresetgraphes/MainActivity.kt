@@ -142,8 +142,24 @@ class MainActivity : AppCompatActivity() {
                 "${root}\n" +
                 "Hauteur : ${root.hauteur()}\n" +
                 "Facteur d'équilibrage : ${root.facteurEquilibrage()}\n" +
-                "L'arbre es-il équilibré : ${root.isEquilibe()}\n" +
-                "Rotation du noeud gauche" //TODO
+                "L'arbre es-il équilibré : ${root.isEquilibe()}\n"
+
+        val root2 = TreeEquilibre(10)
+        val node5_2= TreeEquilibre(5,root2)
+        val node12_2= TreeEquilibre(12,root2)
+        val node2= TreeEquilibre(2,node5_2)
+        val node7= TreeEquilibre(7,node5_2)
+        val node4= TreeEquilibre(4,node2)
+        val node15= TreeEquilibre(15,node12_2)
+        val node17 = TreeEquilibre(17,node15)
+        val tree2 = mutableListOf(node5_2,node12_2,node2,node7,node4,node15,node17)
+        root2.parseFromList(tree2)
+        result += "Arbre :\n " +
+                "${root2}\n" +
+                "Rotation gauche noeud 12\n"
+        node12_2.rotationSimpleGauche()
+        result += "Arbre :\n " +
+                "${root2}\n"
 
         return result + "\n\n"
     }

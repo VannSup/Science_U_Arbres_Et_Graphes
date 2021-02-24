@@ -1,7 +1,6 @@
 package fr.vannsuplabs.scienceuarbresetgraphes.data.tree
 
-class TreeEquilibre(private val id: Int, private var parent : TreeEquilibre? = null) {
-    var parentId: Int? = null
+class TreeEquilibre(private val id: Int, private var parent: TreeEquilibre? = null) {
     var childrenLeft: TreeEquilibre? = null
     var childrenRight: TreeEquilibre? = null
 
@@ -47,6 +46,21 @@ class TreeEquilibre(private val id: Int, private var parent : TreeEquilibre? = n
             }
         }
         return this
+    }
+
+    fun rotationSimpleGauche(){
+        val b: TreeEquilibre? = this.childrenRight
+        b!!.parent = this.parent
+        this.childrenRight = b.childrenLeft
+        if (this.childrenRight != null) this.childrenRight!!.parent = this
+        b.childrenLeft = this
+        this.parent = b
+        if (b.parent != null) {
+            if (b.parent!!.childrenRight == this)
+                b.parent!!.childrenRight = b
+            else
+                b.parent!!.childrenLeft = b
+        }
     }
 
     fun addChildrenFromListOfValue(values: MutableList<Int>, selfPosition: Int) {
