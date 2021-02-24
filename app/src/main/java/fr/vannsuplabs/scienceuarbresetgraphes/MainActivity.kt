@@ -105,8 +105,6 @@ class MainActivity : AppCompatActivity() {
         val tree = mutableListOf(node5, node25, node3, node12, node21, node28, node8, node13, node6)
         root.parseFromList(tree)
 
-
-
         result += "Arbre :\n " +
                 "${root}\n" +
                 " Ajout de 50 et de 19\n"
@@ -117,7 +115,40 @@ class MainActivity : AppCompatActivity() {
         result += "${root}\n" +
                 "Parcours infixe : ${root.profondeurInfixe()}\n"+
                 "Recherche de 8: ${root.findToString(8)}\n" +
-                "Recherche de 9: ${root.findToString(9)}"
+                "Recherche de 9: ${root.findToString(9)}\n\n"
+
+        val root2 =  TreeBinaireSearch((0..9999).random())
+
+        val listOfValues = mutableListOf<Int>()
+        val listOfValuesToSearch = mutableListOf<Int>()
+        for (i in 0..10000)
+            listOfValues.add((0..9999).random())
+        root2.addChildrenFromListOfValue(listOfValues,0)
+
+        for (i in 0..10000)
+            listOfValuesToSearch.add((0..9999).random())
+
+        result +="Recherche de 100 items dans une liste de 10 000 items :\n"
+
+        var begin = System.nanoTime()
+        listOfValuesToSearch.forEach { root2.find(it) }
+        var end = System.nanoTime()
+        result += "Temps recherche parcours arbre ${end-begin} nanoseconde\n"
+
+        begin = System.nanoTime()
+        listOfValuesToSearch.forEach { elementSearch -> listOfValues.find { it == elementSearch } }
+        end = System.nanoTime()
+        result += "Temps recherche classique ${end-begin} nanoseconds\n\n"
+
+        begin = System.nanoTime()
+        root2.profondeurInfixe()
+        end = System.nanoTime()
+        result +="Temps de trie avec parcour infixe : ${end-begin} ns\n"
+
+        begin = System.nanoTime()
+        listOfValuesToSearch.sort()
+        end = System.nanoTime()
+        result +="Temps de trie classique : ${end-begin} ns\n"
 
         return result + "\n\n"
     }

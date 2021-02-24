@@ -63,19 +63,7 @@ class TreeBinaireSearch(val id: Int, private var parent: TreeBinaireSearch? = nu
     }
 
     fun addChildrenFromListOfValue(values: MutableList<Int>, selfPosition: Int) {
-        val length = values.size
-
-        if (2 * selfPosition + 1 < length) {
-            val leftChild = TreeBinaireSearch(values[2 * selfPosition + 1], this.parent)
-            leftChild.addChildrenFromListOfValue(values, 2 * selfPosition + 1)
-            childrenLeft = leftChild
-        }
-
-        if (2 * selfPosition + 2 < length) {
-            val rightChild = TreeBinaireSearch(values[2 * selfPosition + 2], this.parent)
-            rightChild.addChildrenFromListOfValue(values, 2 * selfPosition + 2)
-            childrenRight = rightChild
-        }
+        values.forEach { this.insert(it) }
     }
 
     override fun toString(): String {
