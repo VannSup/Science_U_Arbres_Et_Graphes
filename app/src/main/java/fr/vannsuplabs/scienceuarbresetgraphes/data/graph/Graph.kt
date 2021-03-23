@@ -1,63 +1,113 @@
 package fr.vannsuplabs.scienceuarbresetgraphes.data.graph
 
+import java.util.*
 
 class Graph() {
 
-    private var allNode: MutableList<Node> = mutableListOf()
+    private var graph = GraphData(1)
 
-    fun start(){
-        makeGraph()
+    fun start() : String{
+        var rep = parcoursDijkstra("A", "S") +"\n"
+
+        //Clean graph
+        graph = GraphData(1)
+
+        rep += parcoursProfondeurModifierStringResult("A","S")
+
+        return rep
     }
 
-    private fun makeGraph(){
-        val nodeA = Node("A")
-        val nodeB = Node("B")
-        val nodeC = Node("C")
-        val nodeD = Node("D")
-        val nodeE = Node("E")
-        val nodeF = Node("F")
-        val nodeS = Node("S")
+    private fun parcoursDijkstra(startNodeName: String, endNodeName: String) : String{
+        //Si l'un des deux élément rechercher n'existe pas on léve une erreur
+        val startNode: Node = graph.findNodeByName(startNodeName) ?: throw Exception("Le noeud de départ n'existe pas")
+        val endNode: Node = graph.findNodeByName(endNodeName) ?: throw Exception("Le noeud d'arriver n'existe pas")
 
-        val AC = Branch(3,nodeC)
-        val AD = Branch(5,nodeD)
-        val AE = Branch(4,nodeE)
-        nodeA.children.addAll(mutableListOf(AC,AD,AE))
+        startNode.distanceFromSource = 0
+        var currentNode :Node? = null
+        var minimumDistanceFromSource : Int = Double.POSITIVE_INFINITY.toInt()
+        graph.graph.forEach { node: Node ->
+            if(!node.visited){
+                if(node.distanceFromSource < minimumDistanceFromSource) {
+                    minimumDistanceFromSource = node.distanceFromSource
+                    currentNode = node
+                }
+            }
+        }
 
-        val BC = Branch(5,nodeC)
-        val BE = Branch(2,nodeE)
-        val BF = Branch(3,nodeF)
-        nodeB.children.addAll(mutableListOf(BC,BE,BF))
-        
-        val CA = Branch(3,nodeA)
-        val CB = Branch(5,nodeB)
-        val CD = Branch(1,nodeD)
-        val CF = Branch(4,nodeF)
-        val CS = Branch(5,nodeS)
-        nodeC.children.addAll(mutableListOf(CA,CB,CD,CF,CS))
+        while (currentNode != null){
+            currentNode?.visited = true
+            currentNode?.children?.forEach { branch: Branch ->
+                if (branch.destination.distanceFromSource> currentNode?.distanceFromSource?.plus(branch.weight)!!){
+                    branch.destination.distanceFromSource = currentNode?.distanceFromSource?.plus(branch.weight)!!
+                    branch.destination.bestParentFromSource = currentNode
+                }
+            }
+            currentNode = null
+            minimumDistanceFromSource = Double.POSITIVE_INFINITY.toInt()
+            graph.graph.forEach { node: Node ->
+                if(!node.visited){
+                    if(node.distanceFromSource < minimumDistanceFromSource) {
+                        minimumDistanceFromSource = node.distanceFromSource
+                        currentNode = node
+                    }
+                }
+            }
+        }
 
-        val DA = Branch(5,nodeA)
-        val DC = Branch(1,nodeC)
-        val DS = Branch(4,nodeS)
-        nodeD.children.addAll(mutableListOf(DA,DC,DS))
+        //On crée le tableau du plus cours chemin en partant de la fin puis on le retourne
+        currentNode = endNode
+        val result = mutableListOf<Node>()
+        while (currentNode != null){
+            result.add(currentNode!!)
 
-        val EA = Branch(4,nodeA)
-        val EB = Branch(2,nodeB)
-        nodeE.children.addAll(mutableListOf(EA,EB))
+            currentNode = if(currentNode?.name == startNodeName)
+                null
+            else
+                currentNode?.bestParentFromSource
+        }
+        result.reverse()
 
-        val FB = Branch(3,nodeB)
-        val FC = Branch(4,nodeC)
-        val FS = Branch(8,nodeS)
-        nodeF.children.addAll(mutableListOf(FB,FC,FS))
-
-        val SC = Branch(5,nodeC)
-        val SD = Branch(4,nodeD)
-        val SF = Branch(8,nodeF)
-        nodeS.children.addAll(mutableListOf(SC,SD,SF))
-
-        allNode.addAll(mutableListOf(nodeA,nodeB,nodeC,nodeD,nodeE,nodeF,nodeS))
+        //Construction du resultas texte
+        var resultString = ""
+        result.forEach {
+            resultString += if (result.last() == it)
+                "${it.name}\nNombre de poids parcourus : ${it.distanceFromSource}"
+            else
+                "${it.name} -> "
+        }
+        return resultString
     }
 
-    private fun parcoursDijkstra(){
+    private fun parcoursProfondeurModifierStringResult(startNodeName: String, endNodeName: String) : String
+    {
+        val result = mutableListOf<Node>()
+        parcoursProfondeurModifier(graph.findNodeByName(startNodeName)!!, result, graph.findNodeByName(endNodeName)!!,0)
+        result.reverse()
+        var resultString = ""
+        result.forEach {
+            resultString += if (result.last() == it)
+                "${it.name}\nNombre de poids parcourus : ${it.distanceFromSource}"
+            else
+                "${it.name} -> "
+        }
+        return resultString
+    }
 
+    private fun parcoursProfondeurModifier(node :Node, result: MutableList<Node>, nodeSearch:Node, distanceFromSource:Int): Boolean{
+        if(node == nodeSearch){
+            node.distanceFromSource = distanceFromSource
+            result.add(node)
+            return true
+        }
+        else if(!node.visited){
+            node.visited = true
+            node.children.forEach { branch: Branch ->
+                if(parcoursProfondeurModifier(branch.destination, result,nodeSearch,distanceFromSource + branch.weight)) {
+                    result.add(node)
+                    return true
+                }
+            }
+        }
+        return false
     }
 }

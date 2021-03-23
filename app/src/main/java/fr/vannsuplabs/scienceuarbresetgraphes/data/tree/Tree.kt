@@ -8,7 +8,7 @@ class Tree(private val id: String, private var parent: Tree? = null) {
     fun parcoursLargeur(): String {
         var resultString = ""
         val currentNodes: Queue<Tree> = LinkedList()
-        currentNodes.add(this);
+        currentNodes.add(this)
         val result: MutableList<Tree> = mutableListOf()
 
         while (currentNodes.size != 0) {
