@@ -2,25 +2,35 @@ package fr.vannsuplabs.scienceuarbresetgraphes.data.graph
 
 import java.util.*
 
-class Graph() {
+class Graph(private val version: Int) {
 
-    private var graph = GraphData(1)
+    private var graph = GraphData(version)
 
-    fun start() : String{
-        var rep = parcoursDijkstra("A", "S") +"\n"
+    fun start(startNodeName: String, endNodeName: String) : String{
+
+        var result ="Dijkstra :\n"
+        var begin = System.nanoTime()
+        result += parcoursDijkstra(startNodeName, endNodeName)+"\n"
+        var end = System.nanoTime()
+        result += "Temps de calcul du parcours ${end-begin} nanoseconde\n\n\n"
+
 
         //Clean graph
-        graph = GraphData(1)
+        graph = GraphData(version)
 
-        rep += parcoursProfondeurModifierStringResult("A","S")
+        result +="Parcours profondeur adapter :\n"
+        begin = System.nanoTime()
+        result += parcoursProfondeurModifierStringResult(startNodeName, endNodeName)+"\n"
+        end = System.nanoTime()
+        result += "Temps de calcul du parcours ${end-begin} nanoseconde\n\n\n"
 
-        return rep
+        return result
     }
 
     private fun parcoursDijkstra(startNodeName: String, endNodeName: String) : String{
         //Si l'un des deux élément rechercher n'existe pas on léve une erreur
-        val startNode: Node = graph.findNodeByName(startNodeName) ?: throw Exception("Le noeud de départ n'existe pas")
-        val endNode: Node = graph.findNodeByName(endNodeName) ?: throw Exception("Le noeud d'arriver n'existe pas")
+        val startNode: Node = graph.findNodeByName(startNodeName) ?: return "Le noeud de départ n'existe pas"
+        val endNode: Node = graph.findNodeByName(endNodeName) ?: return "Le noeud d'arriver n'existe pas"
 
         startNode.distanceFromSource = 0
         var currentNode :Node? = null
@@ -81,8 +91,8 @@ class Graph() {
     private fun parcoursProfondeurModifierStringResult(startNodeName: String, endNodeName: String) : String
     {
         //Si l'un des deux élément rechercher n'existe pas on léve une erreur
-        val startNode: Node = graph.findNodeByName(startNodeName) ?: throw Exception("Le noeud de départ n'existe pas")
-        val endNode: Node = graph.findNodeByName(endNodeName) ?: throw Exception("Le noeud d'arriver n'existe pas")
+        val startNode: Node = graph.findNodeByName(startNodeName) ?: return "Le noeud de départ n'existe pas"
+        val endNode: Node = graph.findNodeByName(endNodeName) ?: return "Le noeud d'arriver n'existe pas"
 
         val result = mutableListOf<Node>()
         parcoursProfondeurModifier(startNode, result, endNode,0)
