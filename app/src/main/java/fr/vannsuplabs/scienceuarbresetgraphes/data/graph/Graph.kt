@@ -80,8 +80,12 @@ class Graph() {
 
     private fun parcoursProfondeurModifierStringResult(startNodeName: String, endNodeName: String) : String
     {
+        //Si l'un des deux élément rechercher n'existe pas on léve une erreur
+        val startNode: Node = graph.findNodeByName(startNodeName) ?: throw Exception("Le noeud de départ n'existe pas")
+        val endNode: Node = graph.findNodeByName(endNodeName) ?: throw Exception("Le noeud d'arriver n'existe pas")
+
         val result = mutableListOf<Node>()
-        parcoursProfondeurModifier(graph.findNodeByName(startNodeName)!!, result, graph.findNodeByName(endNodeName)!!,0)
+        parcoursProfondeurModifier(startNode, result, endNode,0)
         result.reverse()
         var resultString = ""
         result.forEach {
